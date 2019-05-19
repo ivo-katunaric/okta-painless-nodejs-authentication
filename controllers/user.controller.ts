@@ -25,5 +25,5 @@ export async function post(req: express.Request, res: express.Response) {
 }
 
 export async function getAll(req: express.Request, res: express.Response) {
-  res.json(users);
+  res.json(users.map(user => ({ email: user.email, id: user.id })));
 }
