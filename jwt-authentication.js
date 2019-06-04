@@ -10,7 +10,7 @@ export const users = [{
   password: 'password',
 }];
 
-const APP_SECRET = 'this is a secret, must be randomly generated and should be injected using env variables rather then committed to repo';
+const { APP_SECRET = 'something really random' } = process.env;
 
 export function encodeToken(tokenData) {
   return jwt.sign(tokenData, APP_SECRET);
