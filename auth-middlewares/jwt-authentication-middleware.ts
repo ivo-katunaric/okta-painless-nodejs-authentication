@@ -5,18 +5,18 @@ import jwt from 'jsonwebtoken';
 import { IRequest } from '../utils/request';
 import { users } from '../db/users.db';
 
-export const JWT_PRIVATE_KEY = env.get('JWT_PRIVATE_KEY').required(true).asString();
+export const APP_SECRET = env.get('APP_SECRET').required(true).asString();
 
 export interface ITokenData {
   userId: number;
 }
 
 export function encodeToken(tokenData: ITokenData) {
-  return jwt.sign(tokenData, JWT_PRIVATE_KEY);
+  return jwt.sign(tokenData, APP_SECRET);
 }
 
 export function decodeToken(token: string): ITokenData {
-  return jwt.verify(token, JWT_PRIVATE_KEY) as any;
+  return jwt.verify(token, APP_SECRET) as any;
 }
 
 export const jwtAuthenticationMiddleware = (req: IRequest, res: express.Response, next: express.NextFunction) => {

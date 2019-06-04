@@ -6,7 +6,7 @@
 
 ## Create .env file in the root of the project
 ```
-JWT_PRIVATE_KEY=secret
+APP_SECRET=secret
 ```
 
 ## Start server
