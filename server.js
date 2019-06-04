@@ -6,9 +6,8 @@ import { ExpressOIDC } from '@okta/oidc-middleware';
 import session from 'express-session';
 
 import * as userController from './controllers/user.controller';
-import * as jwtAuthController from './controllers/jwt-auth.controller';
-
-import { jwtAuthenticationMiddleware } from './auth-middlewares/jwt-authentication-middleware';
+import * as messagesController from './controllers/messages.controller';
+import {isAuthenticatedMiddleware, jwtAuthenticationMiddleware, jwtLogin} from './jwt-authentication';
 
 const app = express();
 
@@ -23,7 +22,8 @@ const oidc = new ExpressOIDC({
   client_id: clientId,
   client_secret: clientSecret,
   appBaseUrl: appBaseUrl,
-  scope: 'openid profile'
+  scope: 'openid profile',
+  post_logout_redirect_uri: 'http://localhost:3000/logout/callback',
 });
 
 app.use(session({
@@ -38,15 +38,16 @@ app.use(jwtAuthenticationMiddleware);
 
 app.get('/users', oidc.ensureAuthenticated(), userController.getAll);
 app.post('/users', userController.post);
-app.post('/jwt-login', jwtAuthController.jwtLogin);
+app.post('/jwt-login', jwtLogin);
 app.get('/test', (req, res) => {
   console.log('req.userContext', req.userContext);
   console.log('req.isAuthenticated()', req.isAuthenticated());
   res.json(req.userContext);
-})
+});
+app.get('/messages', isAuthenticatedMiddleware, messagesController.getAll);
+app.post('/messages', isAuthenticatedMiddleware, messagesController.post);
 
 app.get('/logout', oidc.forceLogoutAndRevoke(), (req, res) => {
-  console.log('logged out!')
 });
 
 const port = env.get('PORT', '3000').asIntPositive();

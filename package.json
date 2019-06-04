@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nnode server.ts"
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +13,7 @@
     "@okta/oidc-middleware": "^2.0.0",
     "@types/express-session": "^1.15.12",
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "env-var": "^4.0.0",
     "express": "^4.17.0",
