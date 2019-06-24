@@ -18,6 +18,11 @@ export async function post(req, res) {
   const { text, toUserId } = req.body;
   const id = messages.length + 1;
 
+  if (!text || !toUserId) {
+    res.status(400);
+    return res.json({ error: 'Message requires both `text` and `toUserId` fields.' });
+  }
+
   const newMessage = {
     id, text, fromUserId: userId, toUserId
   };
