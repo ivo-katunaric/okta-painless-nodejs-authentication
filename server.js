@@ -5,7 +5,7 @@ import { ExpressOIDC } from '@okta/oidc-middleware';
 import session from 'express-session';
 
 import * as messagesController from './messages.controller';
-import { isAuthenticatedMiddleware, JWTAuthenticationMiddleware, JWTLogin } from './JWT-authentication';
+import { isAuthenticatedMiddleware, jwtAuthenticationMiddleware, jwtLogin } from './jwt-authentication';
 
 const app = express();
 
@@ -28,9 +28,9 @@ app.use(session({
 
 app.use(oidc.router);
 app.use(bodyParser.json());
-app.use(JWTAuthenticationMiddleware);
+app.use(jwtAuthenticationMiddleware);
 
-app.post('/JWT-login', JWTLogin);
+app.post('/jwt-login', jwtLogin);
 
 app.get('/messages', oidc.ensureAuthenticated(), messagesController.getAll);
 app.post('/messages', oidc.ensureAuthenticated(), messagesController.post);

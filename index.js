@@ -1,2 +1,2 @@
-require('nnode/ts');
+require('nnode');
 require('./server');

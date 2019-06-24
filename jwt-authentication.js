@@ -1,4 +1,4 @@
-import JWT from 'jsonwebtoken';
+import njwt from 'njwt';
 
 export const users = [{
   id: '1',
@@ -10,26 +10,27 @@ export const users = [{
   password: 'password',
 }];
 
-const { APP_SECRET = 'something really random' } = process.env;
+const { APP_SECRET = 'something really random', APP_BASE_URL = 'http://localhost:3000' } = process.env;
 
 export function encodeToken(tokenData) {
-  return JWT.sign(tokenData, APP_SECRET);
+  return njwt.create(tokenData, APP_SECRET).compact();
 }
 
 export function decodeToken(token) {
-  return JWT.verify(token, APP_SECRET);
+  return njwt.verify(token, APP_SECRET).body;
 }
 
 // this express middleware attaches `userId` to `req` object of authenticated user if authentication was successful
 // JWT token is expected to be stored in `Access-Token` header key
-export const JWTAuthenticationMiddleware = (req, res, next) => {
+export const jwtAuthenticationMiddleware = (req, res, next) => {
   const token = req.header('Access-Token');
   if (!token) {
     return next();
   }
 
   try {
-    const { userId } = decodeToken(token);
+    const decoded = decodeToken(token);
+    const { userId } = decoded;
     if (users.find(user => user.id === userId)) {
       req.userId = userId;
     }
@@ -51,7 +52,7 @@ export async function isAuthenticatedMiddleware(req, res, next) {
 }
 
 // this endpoints generates and returns JWT access token
-export async function JWTLogin(req, res) {
+export async function jwtLogin(req, res) {
   const { email, password } = req.body;
 
   const user = users.find(user => user.email === email && user.password === password);
