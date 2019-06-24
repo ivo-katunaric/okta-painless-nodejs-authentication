@@ -16,6 +16,7 @@ export async function getAll(req, res) {
 export async function post(req, res) {
   const userId = getUserIdFromAuthenticatedRequest(req);
   const { text, toUserId } = req.body;
+
   const id = messages.length + 1;
 
   if (!text || !toUserId) {

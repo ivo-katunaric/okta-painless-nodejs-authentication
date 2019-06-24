@@ -5,7 +5,7 @@ import { ExpressOIDC } from '@okta/oidc-middleware';
 import session from 'express-session';
 
 import * as messagesController from './messages.controller';
-import { isAuthenticatedMiddleware, jwtAuthenticationMiddleware, jwtLogin } from './jwt-authentication';
+import { isAuthenticatedMiddleware, JWTAuthenticationMiddleware, JWTLogin } from './JWT-authentication';
 
 const app = express();
 
@@ -28,17 +28,19 @@ app.use(session({
 
 app.use(oidc.router);
 app.use(bodyParser.json());
-app.use(jwtAuthenticationMiddleware);
+app.use(JWTAuthenticationMiddleware);
 
-app.post('/jwt-login', jwtLogin);
+app.post('/JWT-login', JWTLogin);
+
 app.get('/messages', oidc.ensureAuthenticated(), messagesController.getAll);
 app.post('/messages', oidc.ensureAuthenticated(), messagesController.post);
 
-// or attach endpoints like this to use our custom-made jwt middleware instead
+// or attach endpoints like this to use your custom-made JWT middleware instead
 // app.get('/messages', isAuthenticatedMiddleware, messagesController.getAll);
 // app.post('/messages', isAuthenticatedMiddleware, messagesController.post);
 
 app.get('/logout', oidc.forceLogoutAndRevoke(), (req, res) => {
+  // this is never called because forceLogoutAndRevoke always redirects
 });
 
 const { PORT = 3000 } = process.env;
