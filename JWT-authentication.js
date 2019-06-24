@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import JWT from 'jsonwebtoken';
 
 export const users = [{
   id: '1',
@@ -13,16 +13,16 @@ export const users = [{
 const { APP_SECRET = 'something really random' } = process.env;
 
 export function encodeToken(tokenData) {
-  return jwt.sign(tokenData, APP_SECRET);
+  return JWT.sign(tokenData, APP_SECRET);
 }
 
 export function decodeToken(token) {
-  return jwt.verify(token, APP_SECRET);
+  return JWT.verify(token, APP_SECRET);
 }
 
 // this express middleware attaches `userId` to `req` object of authenticated user if authentication was successful
-// jwt token is expected to be stored in `Access-Token` header key
-export const jwtAuthenticationMiddleware = (req, res, next) => {
+// JWT token is expected to be stored in `Access-Token` header key
+export const JWTAuthenticationMiddleware = (req, res, next) => {
   const token = req.header('Access-Token');
   if (!token) {
     return next();
@@ -40,7 +40,7 @@ export const jwtAuthenticationMiddleware = (req, res, next) => {
   next();
 };
 
-// this express middleware stops the request if user is not authenticated properly
+// this express middleware stops the request if a user is not authenticated properly
 export async function isAuthenticatedMiddleware(req, res, next) {
   if (req.userId) {
     return next();
@@ -50,8 +50,8 @@ export async function isAuthenticatedMiddleware(req, res, next) {
   res.json({ error: 'User not authenticated' });
 }
 
-// this endpoints generates and returns jwt access token
-export async function jwtLogin(req, res) {
+// this endpoints generates and returns JWT access token
+export async function JWTLogin(req, res) {
   const { email, password } = req.body;
 
   const user = users.find(user => user.email === email && user.password === password);
